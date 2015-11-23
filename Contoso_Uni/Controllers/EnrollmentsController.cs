@@ -9,7 +9,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Contoso_Uni.Models;
-
+using System.Web.Http.Cors;
 
 namespace Contoso_Uni.Controllers
 {
