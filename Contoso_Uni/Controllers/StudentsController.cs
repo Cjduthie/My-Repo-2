@@ -9,7 +9,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Contoso_Uni.Models;
-using System.Web.Http.Cors;
+
 namespace Contoso_Uni.Controllers
 {
     public class StudentsController : ApiController
@@ -17,16 +17,16 @@ namespace Contoso_Uni.Controllers
         private Contoso_UniContext db = new Contoso_UniContext();
 
         // GET: api/Students
-        public IQueryable<Student> GetStudents()
+        public IQueryable<Student> GetStudent()
         {
-            return db.Students;
+            return db.Student;
         }
 
         // GET: api/Students/5
         [ResponseType(typeof(Student))]
         public IHttpActionResult GetStudent(int id)
         {
-            Student student = db.Students.Find(id);
+            Student student = db.Student.Find(id);
             if (student == null)
             {
                 return NotFound();
@@ -79,7 +79,7 @@ namespace Contoso_Uni.Controllers
                 return BadRequest(ModelState);
             }
 
-            db.Students.Add(student);
+            db.Student.Add(student);
             db.SaveChanges();
 
             return CreatedAtRoute("DefaultApi", new { id = student.ID }, student);
@@ -89,13 +89,13 @@ namespace Contoso_Uni.Controllers
         [ResponseType(typeof(Student))]
         public IHttpActionResult DeleteStudent(int id)
         {
-            Student student = db.Students.Find(id);
+            Student student = db.Student.Find(id);
             if (student == null)
             {
                 return NotFound();
             }
 
-            db.Students.Remove(student);
+            db.Student.Remove(student);
             db.SaveChanges();
 
             return Ok(student);
@@ -112,7 +112,7 @@ namespace Contoso_Uni.Controllers
 
         private bool StudentExists(int id)
         {
-            return db.Students.Count(e => e.ID == id) > 0;
+            return db.Student.Count(e => e.ID == id) > 0;
         }
     }
 }

@@ -7,43 +7,28 @@ using System.Text;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
-using System.Web;
-using MySql.Data.Types;
-using MySql.Data.Entity;
 using MySql.Data.MySqlClient;
 using System.Configuration;
 
 
-namespace Contoso_Uni.Models
-{
+namespace Contoso_Uni.Models {
     [DbConfigurationType(typeof(MySql.Data.Entity.MySqlEFConfiguration))]
-    public class Contoso_UniContext : DbContext
-    {
+    public class Contoso_UniContext : DbContext {
         // You can add custom code to this file. Changes will not be overwritten.
         // 
         // If you want Entity Framework to drop and regenerate your database
         // automatically whenever you change your model schema, please use data migrations.
         // For more information refer to the documentation:
         // http://msdn.microsoft.com/en-us/data/jj591621.aspx
-
-
-        public Contoso_UniContext() : base("name=Contoso_UniContext")
-        {
-
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<Contoso_UniContext, MyConfiguration>());
-        }
-        public class MyConfiguration : DbMigrationsConfiguration<Contoso_UniContext>
-        {
-            public MyConfiguration()
-            {
+        public class MyConfiguration : DbMigrationsConfiguration<Contoso_UniContext> {
+            public MyConfiguration() {
                 this.AutomaticMigrationsEnabled = true;
             }
 
             // This code below is used to create and Populate a Database. //
-            protected override void Seed(Contoso_UniContext context)
-            {
+            protected override void Seed(Contoso_UniContext context) {
                 var students = new List<Student>
-                {
+                    {
                     new Student { FirstMidName = "Carson",   LastName = "Alexander",
                         EnrollmentDate = DateTime.Parse("2010-09-01") },
                     new Student { FirstMidName = "Meredith", LastName = "Alonso",
@@ -61,11 +46,11 @@ namespace Contoso_Uni.Models
                     new Student { FirstMidName = "Nino",     LastName = "Olivetto",
                         EnrollmentDate = DateTime.Parse("2005-08-11")}
                 };
-                students.ForEach(s => context.Students.AddOrUpdate(p => p.LastName, s));
+                students.ForEach(s => context.Student.AddOrUpdate(p => p.LastName, s));
                 context.SaveChanges();
 
                 var courses = new List<Course>
-                {
+                    {
                     new Course {CourseID = 1050, Title = "Chemistry",      Credits = 3, },
                     new Course {CourseID = 4022, Title = "Microeconomics", Credits = 3, },
                     new Course {CourseID = 4041, Title = "Macroeconomics", Credits = 3, },
@@ -74,11 +59,11 @@ namespace Contoso_Uni.Models
                     new Course {CourseID = 2021, Title = "Composition",    Credits = 3, },
                     new Course {CourseID = 2042, Title = "Literature",     Credits = 4, }
                 };
-                courses.ForEach(s => context.Courses.AddOrUpdate(p => p.Title, s));
+                courses.ForEach(s => context.Course.AddOrUpdate(p => p.Title, s));
                 context.SaveChanges();
 
                 var enrollments = new List<Enrollment>
-                {
+                    {
                     new Enrollment {
                         StudentID = students.Single(s => s.LastName == "Alexander").ID,
                         CourseID = courses.Single(c => c.Title == "Chemistry" ).CourseID,
@@ -135,22 +120,27 @@ namespace Contoso_Uni.Models
                      }
                 };
 
-                foreach (Enrollment e in enrollments)
-                {
-                    var enrollmentInDataBase = context.Enrollments.Where(
+                foreach (Enrollment e in enrollments) {
+                    var enrollmentInDataBase = context.Enrollment.Where(
                         s =>
                              s.Student.ID == e.StudentID &&
                              s.Course.CourseID == e.CourseID).SingleOrDefault();
-                    if (enrollmentInDataBase == null)
-                    {
-                        context.Enrollments.Add(e);
+                    if (enrollmentInDataBase == null) {
+                        context.Enrollment.Add(e);
                     }
                 }
                 context.SaveChanges();
             }
         }
-        public System.Data.Entity.DbSet<Contoso_Uni.Models.Enrollment> Enrollments { get; set; }
-        public System.Data.Entity.DbSet<Contoso_Uni.Models.Student> Students { get; set; }
-        public System.Data.Entity.DbSet<Contoso_Uni.Models.Course> Courses { get; set; }
+        public System.Data.Entity.DbSet<Contoso_Uni.Models.Enrollment> Enrollment { get; set; }
+        public System.Data.Entity.DbSet<Contoso_Uni.Models.Student> Student { get; set; }
+        public System.Data.Entity.DbSet<Contoso_Uni.Models.Course> Course { get; set; }
+
+        public Contoso_UniContext() : base("name=Contoso_UniContext") {
+
+            if (!Database.Exists("Contoso_UniContext")) {
+                Database.SetInitializer(new MigrateDatabaseToLatestVersion<Contoso_UniContext, MyConfiguration>());
+            }
+        }
     }
 }

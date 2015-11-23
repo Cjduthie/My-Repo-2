@@ -9,7 +9,6 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Contoso_Uni.Models;
-using System.Web.Cors;
 
 namespace Contoso_Uni.Controllers
 {
@@ -18,16 +17,16 @@ namespace Contoso_Uni.Controllers
         private Contoso_UniContext db = new Contoso_UniContext();
 
         // GET: api/Courses
-        public IQueryable<Course> GetCourses()
+        public IQueryable<Course> GetCourse()
         {
-            return db.Courses;
+            return db.Course;
         }
 
         // GET: api/Courses/5
         [ResponseType(typeof(Course))]
         public IHttpActionResult GetCourse(int id)
         {
-            Course course = db.Courses.Find(id);
+            Course course = db.Course.Find(id);
             if (course == null)
             {
                 return NotFound();
@@ -80,23 +79,8 @@ namespace Contoso_Uni.Controllers
                 return BadRequest(ModelState);
             }
 
-            db.Courses.Add(course);
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateException)
-            {
-                if (CourseExists(course.CourseID))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            db.Course.Add(course);
+            db.SaveChanges();
 
             return CreatedAtRoute("DefaultApi", new { id = course.CourseID }, course);
         }
@@ -105,13 +89,13 @@ namespace Contoso_Uni.Controllers
         [ResponseType(typeof(Course))]
         public IHttpActionResult DeleteCourse(int id)
         {
-            Course course = db.Courses.Find(id);
+            Course course = db.Course.Find(id);
             if (course == null)
             {
                 return NotFound();
             }
 
-            db.Courses.Remove(course);
+            db.Course.Remove(course);
             db.SaveChanges();
 
             return Ok(course);
@@ -128,7 +112,7 @@ namespace Contoso_Uni.Controllers
 
         private bool CourseExists(int id)
         {
-            return db.Courses.Count(e => e.CourseID == id) > 0;
+            return db.Course.Count(e => e.CourseID == id) > 0;
         }
     }
 }

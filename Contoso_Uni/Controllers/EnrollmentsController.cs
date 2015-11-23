@@ -9,7 +9,6 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using Contoso_Uni.Models;
-using System.Web.Http.Cors;
 
 namespace Contoso_Uni.Controllers
 {
@@ -18,16 +17,16 @@ namespace Contoso_Uni.Controllers
         private Contoso_UniContext db = new Contoso_UniContext();
 
         // GET: api/Enrollments
-        public IQueryable<Enrollment> GetEnrollments()
+        public IQueryable<Enrollment> GetEnrollment()
         {
-            return db.Enrollments;
+            return db.Enrollment;
         }
 
         // GET: api/Enrollments/5
         [ResponseType(typeof(Enrollment))]
         public IHttpActionResult GetEnrollment(int id)
         {
-            Enrollment enrollment = db.Enrollments.Find(id);
+            Enrollment enrollment = db.Enrollment.Find(id);
             if (enrollment == null)
             {
                 return NotFound();
@@ -80,7 +79,7 @@ namespace Contoso_Uni.Controllers
                 return BadRequest(ModelState);
             }
 
-            db.Enrollments.Add(enrollment);
+            db.Enrollment.Add(enrollment);
             db.SaveChanges();
 
             return CreatedAtRoute("DefaultApi", new { id = enrollment.EnrollmentID }, enrollment);
@@ -90,13 +89,13 @@ namespace Contoso_Uni.Controllers
         [ResponseType(typeof(Enrollment))]
         public IHttpActionResult DeleteEnrollment(int id)
         {
-            Enrollment enrollment = db.Enrollments.Find(id);
+            Enrollment enrollment = db.Enrollment.Find(id);
             if (enrollment == null)
             {
                 return NotFound();
             }
 
-            db.Enrollments.Remove(enrollment);
+            db.Enrollment.Remove(enrollment);
             db.SaveChanges();
 
             return Ok(enrollment);
@@ -113,7 +112,7 @@ namespace Contoso_Uni.Controllers
 
         private bool EnrollmentExists(int id)
         {
-            return db.Enrollments.Count(e => e.EnrollmentID == id) > 0;
+            return db.Enrollment.Count(e => e.EnrollmentID == id) > 0;
         }
     }
 }
